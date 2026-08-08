@@ -14,17 +14,20 @@ export function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col bg-muted/30">
-      <header className="border-b bg-background">
+    <div className="flex min-h-svh flex-col bg-background">
+      <header className="border-b border-border/70 bg-card/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
-            <Link to="/admin/leads" className="font-semibold tracking-tight">
+            <Link
+              to="/admin/leads"
+              className="font-semibold tracking-tight text-foreground"
+            >
               Admin · Quiz ENEM
             </Link>
             <nav className="flex items-center gap-4 text-sm text-muted-foreground">
               <Link
                 to="/admin/leads"
-                className="transition-colors hover:text-foreground"
+                className="transition-colors hover:text-primary"
               >
                 Leads
               </Link>
@@ -43,7 +46,7 @@ export function AdminLayout() {
           </div>
         </div>
       </header>
-      <Separator />
+      <Separator className="opacity-40" />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         <Outlet />
       </main>

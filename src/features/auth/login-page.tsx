@@ -5,13 +5,6 @@ import { useAuth } from './auth-context'
 import { loginSchema, type LoginFormValues } from './login-schema'
 import { Button } from '@/shared/components/ui/button'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/components/ui/card'
-import {
   Form,
   FormControl,
   FormField,
@@ -20,6 +13,8 @@ import {
   FormMessage,
 } from '@/shared/components/ui/form'
 import { Input } from '@/shared/components/ui/input'
+import { QuizPanel, QuizShell, QuizIconBadge } from '@/shared/components/quiz'
+import { Shield } from 'lucide-react'
 
 export function LoginPage() {
   const { isAuthenticated, login } = useAuth()
@@ -41,7 +36,6 @@ export function LoginPage() {
   }
 
   function onSubmit(values: LoginFormValues) {
-    // Placeholder até a API de autenticação do backend estar pronta
     login({
       email: values.email,
       token: 'dev-token',
@@ -50,69 +44,77 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-muted/40 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Área administrativa</CardTitle>
-          <CardDescription>
-            Entre com suas credenciais para acompanhar os leads do quiz.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-              noValidate
-            >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>E-mail</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        autoComplete="username"
-                        placeholder="admin@exemplo.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        autoComplete="current-password"
-                        placeholder="••••••••"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full">
-                Entrar
-              </Button>
-            </form>
-          </Form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            <Link to="/" className="underline-offset-4 hover:underline">
-              Voltar ao quiz
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <QuizShell>
+      <div className="flex min-h-svh items-center justify-center px-4 py-10">
+        <div className="w-full max-w-md space-y-6">
+          <QuizIconBadge icon={Shield} />
+          <QuizPanel
+            title="Área administrativa"
+            description="Entre com suas credenciais para acompanhar os leads do quiz."
+          >
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+                noValidate
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>E-mail</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          autoComplete="username"
+                          placeholder="admin@exemplo.com"
+                          className="h-12 rounded-2xl border-border/80 bg-secondary/50"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Senha</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          autoComplete="current-password"
+                          placeholder="••••••••"
+                          className="h-12 rounded-2xl border-border/80 bg-secondary/50"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="h-12 w-full rounded-full text-base font-semibold shadow-[0_0_20px_var(--glow)]"
+                >
+                  Entrar
+                </Button>
+              </form>
+            </Form>
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+              <Link
+                to="/"
+                className="underline-offset-4 transition-colors hover:text-primary hover:underline"
+              >
+                Voltar ao quiz
+              </Link>
+            </p>
+          </QuizPanel>
+        </div>
+      </div>
+    </QuizShell>
   )
 }

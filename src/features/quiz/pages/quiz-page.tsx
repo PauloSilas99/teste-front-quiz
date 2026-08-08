@@ -1,50 +1,84 @@
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronLeft, Target } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/shared/components/ui/button'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/components/ui/card'
-import { Skeleton } from '@/shared/components/ui/skeleton'
+  ActionDock,
+  QuizIconBadge,
+  QuizPanel,
+  SelectableOption,
+  StepProgress,
+} from '@/shared/components/quiz'
+
+const PLACEHOLDER_OPTIONS = [
+  'Estou no 1º ou 2º ano do ensino médio',
+  'Estou no 3º ano',
+  'Já terminei o ensino médio e estudo por conta',
+  'Já terminei e faço cursinho',
+]
+
+const TOTAL_QUESTIONS = 10
 
 export function QuizPage() {
+  const navigate = useNavigate()
+  const [current] = useState(1)
+  const [selected, setSelected] = useState<number | null>(null)
+
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-10">
-      <motion.div
-        initial={{ opacity: 0, x: 16 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="w-full max-w-xl"
-      >
-        <Card>
-          <CardHeader>
-            <CardDescription>Pergunta 1 de 10</CardDescription>
-            <CardTitle className="text-xl text-balance">
-              Quiz em construção
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              As perguntas serão carregadas da API com TanStack Query.
-            </p>
-            <div className="space-y-2">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="flex justify-between gap-2 pt-2">
-              <Button variant="outline" disabled>
-                Anterior
-              </Button>
-              <Button asChild>
-                <Link to="/captura">Continuar (placeholder)</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+    <div className="flex flex-1 flex-col">
+      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 pt-8 pb-4">
+        <StepProgress current={current} total={TOTAL_QUESTIONS} />
+
+        <QuizIconBadge icon={Target} />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.28 }}
+          >
+            <QuizPanel
+              title="Em que etapa dos estudos você está?"
+              description="As perguntas virão do backend. Esta é uma prévia visual da experiência."
+              className="bg-card"
+            >
+              <div className="flex flex-col gap-2.5">
+                {PLACEHOLDER_OPTIONS.map((label, index) => (
+                  <SelectableOption
+                    key={label}
+                    label={label}
+                    selected={selected === index}
+                    onSelect={() => setSelected(index)}
+                  />
+                ))}
+              </div>
+            </QuizPanel>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <ActionDock
+        primaryLabel="Continuar"
+        primaryDisabled={selected === null}
+        onPrimary={() => {
+          void navigate('/captura')
+        }}
+        secondary={
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            className="size-11 rounded-full border border-border/60"
+            disabled
+            aria-label="Pergunta anterior"
+          >
+            <ChevronLeft className="size-5" />
+          </Button>
+        }
+      />
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import { Outlet } from 'react-router-dom'
+import { QuizShell } from '@/shared/components/quiz'
 
 export function PublicLayout() {
   return (
-    <div className="flex min-h-svh flex-col">
+    <QuizShell>
       <main className="flex flex-1 flex-col">
         <Outlet />
       </main>
-    </div>
+    </QuizShell>
   )
 }
