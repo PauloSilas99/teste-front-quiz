@@ -28,8 +28,8 @@ export function SelectableOption({
         'flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-all duration-200',
         'focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         selected
-          ? 'border-primary bg-primary text-primary-foreground shadow-[0_8px_28px_var(--glow)] scale-[1.01]'
-          : 'border-border/80 bg-surface-elevated text-foreground hover:border-primary/40 hover:bg-accent/40',
+          ? 'border-primary bg-primary text-primary-foreground shadow-[var(--shadow-option)] scale-[1.01] cursor-pointer'
+          : 'border-border/80 bg-surface-elevated text-foreground hover:border-primary/40 hover:bg-accent/40 cursor-pointer',
         disabled && 'pointer-events-none opacity-50',
         className,
       )}

@@ -15,7 +15,7 @@ export function QuizIconBadge({
   return (
     <div
       className={cn(
-        'mx-auto flex items-center justify-center rounded-full border border-primary/30 bg-surface-elevated/80 shadow-[0_0_32px_var(--glow)]',
+        'mx-auto flex items-center justify-center rounded-full border border-primary/30 bg-surface-elevated/80 shadow-[var(--shadow-badge)]',
         size === 'md' ? 'size-16' : 'size-20',
         className,
       )}

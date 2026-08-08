@@ -4,6 +4,7 @@ import { ChevronLeft, UserRound } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import {
+  formatPhoneBr,
   leadCaptureSchema,
   type LeadCaptureFormValues,
 } from './lead-capture-schema'
@@ -34,6 +35,7 @@ export function LeadCapturePage() {
       email: '',
       phone: '',
     },
+    mode: 'onBlur',
   })
 
   function onSubmit(_values: LeadCaptureFormValues) {
@@ -60,7 +62,7 @@ export function LeadCapturePage() {
             >
               <QuizPanel
                 title="Quase lá!"
-                description="Deixe seus dados para desbloquear o diagnóstico. Usamos isso para o time comercial entrar em contato se você quiser."
+                description="Deixe seus dados para desbloquear o diagnóstico."
               >
                 <div className="space-y-4">
                   <FormField
@@ -75,6 +77,10 @@ export function LeadCapturePage() {
                             placeholder="Seu nome"
                             className="h-12 rounded-2xl border-border/80 bg-secondary/50"
                             {...field}
+                            onBlur={(event) => {
+                              field.onChange(event.target.value.trim())
+                              field.onBlur()
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -90,10 +96,21 @@ export function LeadCapturePage() {
                         <FormControl>
                           <Input
                             type="email"
+                            inputMode="email"
                             autoComplete="email"
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck={false}
                             placeholder="voce@email.com"
                             className="h-12 rounded-2xl border-border/80 bg-secondary/50"
                             {...field}
+                            onChange={(event) => {
+                              field.onChange(event.target.value.replace(/\s/g, ''))
+                            }}
+                            onBlur={(event) => {
+                              field.onChange(event.target.value.trim().toLowerCase())
+                              field.onBlur()
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -105,14 +122,19 @@ export function LeadCapturePage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Telefone</FormLabel>
+                        <FormLabel>Telefone celular</FormLabel>
                         <FormControl>
                           <Input
                             type="tel"
-                            autoComplete="tel"
-                            placeholder="(11) 99999-9999"
+                            inputMode="numeric"
+                            autoComplete="tel-national"
+                            placeholder="(11) 98765-4321"
+                            maxLength={15}
                             className="h-12 rounded-2xl border-border/80 bg-secondary/50"
                             {...field}
+                            onChange={(event) => {
+                              field.onChange(formatPhoneBr(event.target.value))
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -132,7 +154,7 @@ export function LeadCapturePage() {
                 type="button"
                 variant="secondary"
                 size="icon"
-                className="size-11 rounded-full border border-border/60"
+                className="size-11 cursor-pointer rounded-full border border-border/60"
                 onClick={() => void navigate('/quiz')}
                 aria-label="Voltar ao quiz"
               >

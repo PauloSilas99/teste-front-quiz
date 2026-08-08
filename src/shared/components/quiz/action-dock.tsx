@@ -30,7 +30,7 @@ export function ActionDock({
         className,
       )}
     >
-      <div className="mx-auto flex w-full max-w-lg items-center gap-3 rounded-full border border-border/70 bg-surface-elevated p-1.5 pr-1.5 shadow-[0_-4px_40px_oklch(0_0_0_/_0.35)]">
+      <div className="mx-auto flex w-full max-w-lg items-center gap-3 rounded-full border border-border/70 bg-surface-elevated p-1.5 pr-1.5 shadow-[var(--shadow-dock)]">
         {secondary ? (
           <div className="shrink-0 pl-1">{secondary}</div>
         ) : (
@@ -41,7 +41,7 @@ export function ActionDock({
           onClick={onPrimary}
           disabled={primaryDisabled}
           size="lg"
-          className="h-12 flex-1 rounded-full text-base font-semibold tracking-wide shadow-[0_0_20px_var(--glow)]"
+          className="h-12 flex-1 cursor-pointer rounded-full text-base font-semibold tracking-wide shadow-[var(--shadow-cta)]"
         >
           {primaryLabel}
           <ChevronsRight className="size-5 opacity-80" />

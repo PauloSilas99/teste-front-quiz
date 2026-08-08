@@ -1,20 +1,33 @@
 import { motion } from 'framer-motion'
-import { ClipboardList, Clock3, Target, Trophy } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import {
+  ChevronDown,
+  ClipboardList,
+  Clock3,
+  Target,
+  Trophy,
+} from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/shared/components/ui/button'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/shared/components/ui/collapsible'
 import {
   ActionDock,
   QuizIconBadge,
-  QuizPanel,
   StatChip,
 } from '@/shared/components/quiz'
+import { cn } from '@/shared/lib/utils'
 
 export function QuizHomePage() {
   const navigate = useNavigate()
+  const [howItWorksOpen, setHowItWorksOpen] = useState(false)
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col px-4 pt-10 pb-4">
+      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col px-4 pt-2 pb-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,46 +56,67 @@ export function QuizHomePage() {
             <StatChip icon={Target} label="Score" value="0–100" />
           </div>
 
-          <QuizPanel
-            title="Como funciona"
-            description="Responda com honestidade. No final você deixa seus dados e vê a faixa de preparação com um resumo das escolhas."
-            className="border-primary/15 bg-primary/5"
+          <Collapsible
+            open={howItWorksOpen}
+            onOpenChange={setHowItWorksOpen}
+            className="overflow-hidden rounded-3xl border border-primary/15 bg-primary/5 shadow-[var(--shadow-panel)]"
           >
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
-                  1
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              >
+                <span className="text-base font-bold tracking-tight">
+                  Como funciona?
                 </span>
-                Responda uma pergunta por vez — pode voltar e alterar.
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
-                  2
-                </span>
-                Informe nome, e-mail e telefone para liberar o resultado.
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
-                  3
-                </span>
-                Receba pontuação e faixa de diagnóstico na hora.
-              </li>
-            </ul>
-          </QuizPanel>
+                <ChevronDown
+                  className={cn(
+                    'size-5 shrink-0 cursor-pointer text-primary transition-transform duration-200',
+                    howItWorksOpen && 'rotate-180',
+                  )}
+                  aria-hidden
+                />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="space-y-4 border-t border-primary/10 px-5 pt-3 pb-5">
+                <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
+                  Cada alternativa tem um peso diferente para diagnosticar onde você está.
+                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
+                  Responda com honestidade. No final você deixa seus dados e vê
+                  a faixa de preparação com um resumo das escolhas.
+                </p>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  <li className="flex gap-3">
+                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
+                      1
+                    </span>
+                    Responda uma pergunta por vez — pode voltar e alterar.
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
+                      2
+                    </span>
+                    Informe nome, e-mail e telefone para liberar o resultado.
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
+                      3
+                    </span>
+                    Receba pontuação e faixa de diagnóstico na hora.
+                  </li>
+                </ul>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <p className="pb-20 text-center text-sm text-muted-foreground">
-            <Link
-              to="/admin/login"
-              className="underline-offset-4 transition-colors hover:text-primary hover:underline"
-            >
-              Área administrativa
-            </Link>
-          </p>
+          {/* <div className="pb-20" /> */}
         </motion.div>
       </div>
 
       <ActionDock
-        primaryLabel="Jogar quiz"
+        primaryLabel="Quiz"
         onPrimary={() => void navigate('/quiz')}
         secondary={
           <Button

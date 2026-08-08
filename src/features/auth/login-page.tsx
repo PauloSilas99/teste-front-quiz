@@ -13,7 +13,12 @@ import {
   FormMessage,
 } from '@/shared/components/ui/form'
 import { Input } from '@/shared/components/ui/input'
-import { QuizPanel, QuizShell, QuizIconBadge } from '@/shared/components/quiz'
+import {
+  QuizPanel,
+  QuizShell,
+  QuizIconBadge,
+  QuizTopBar,
+} from '@/shared/components/quiz'
 import { Shield } from 'lucide-react'
 
 export function LoginPage() {
@@ -45,7 +50,8 @@ export function LoginPage() {
 
   return (
     <QuizShell>
-      <div className="flex min-h-svh items-center justify-center px-4 py-10">
+      <QuizTopBar showAdminLink={false} />
+      <div className="flex flex-1 items-center justify-center px-4 pt-2 pb-10">
         <div className="w-full max-w-md space-y-6">
           <QuizIconBadge icon={Shield} />
           <QuizPanel

@@ -1,12 +1,15 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
-import { LogOut } from 'lucide-react'
+import { LogOut, Moon, Sun } from 'lucide-react'
 import { useAuth } from '@/features/auth'
+import { useTheme } from '@/app/providers/theme-provider'
 import { Button } from '@/shared/components/ui/button'
 import { Separator } from '@/shared/components/ui/separator'
 
 export function AdminLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark'
 
   function handleLogout() {
     logout()
@@ -33,12 +36,26 @@ export function AdminLayout() {
               </Link>
             </nav>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {user?.email ? (
               <span className="hidden text-sm text-muted-foreground sm:inline">
                 {user.email}
               </span>
             ) : null}
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon"
+              onClick={toggleTheme}
+              className="size-9 cursor-pointer rounded-full border border-border/70"
+              aria-label={isDark ? 'Ativar tema claro' : 'Ativar tema escuro'}
+            >
+              {isDark ? (
+                <Sun className="size-4 text-primary" />
+              ) : (
+                <Moon className="size-4 text-primary" />
+              )}
+            </Button>
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="size-4" />
               Sair

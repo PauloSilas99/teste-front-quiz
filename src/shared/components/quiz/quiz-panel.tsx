@@ -31,7 +31,7 @@ export function QuizPanel({
   return (
     <Card
       className={cn(
-        'gap-0 overflow-hidden rounded-3xl border-border/60 bg-card/90 py-0 shadow-[0_20px_60px_oklch(0_0_0_/_0.4)] backdrop-blur-sm',
+        'gap-0 overflow-hidden rounded-3xl border-border/60 bg-card/90 py-0 shadow-[var(--shadow-panel)] backdrop-blur-sm',
         className,
       )}
     >
