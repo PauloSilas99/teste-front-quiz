@@ -1,4 +1,4 @@
-import { Moon, Settings2, Sun, User2 } from 'lucide-react'
+import { Moon, Sun, User2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@/app/providers/theme-provider'
 import { Button } from '@/shared/components/ui/button'

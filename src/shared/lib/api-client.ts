@@ -1,8 +1,32 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3333'
 
+export class ApiError extends Error {
+  status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
+
 type RequestOptions = Omit<RequestInit, 'body'> & {
   body?: unknown
   token?: string | null
+}
+
+async function readErrorMessage(response: Response): Promise<string> {
+  try {
+    const data: unknown = await response.json()
+    if (data && typeof data === 'object' && 'message' in data) {
+      const message = (data as { message: unknown }).message
+      if (typeof message === 'string') return message
+      if (Array.isArray(message)) return message.join(', ')
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return response.statusText || `HTTP ${response.status}`
 }
 
 export async function apiClient<T>(
@@ -20,8 +44,7 @@ export async function apiClient<T>(
   })
 
   if (!response.ok) {
-    const message = await response.text().catch(() => response.statusText)
-    throw new Error(message || `HTTP ${response.status}`)
+    throw new ApiError(response.status, await readErrorMessage(response))
   }
 
   if (response.status === 204) {

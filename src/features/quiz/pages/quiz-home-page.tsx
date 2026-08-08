@@ -8,6 +8,9 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { fetchQuestions } from '@/shared/api'
+import { useQuizSession } from '../quiz-session-context'
 import { Button } from '@/shared/components/ui/button'
 import {
   Collapsible,
@@ -24,6 +27,25 @@ import { cn } from '@/shared/lib/utils'
 export function QuizHomePage() {
   const navigate = useNavigate()
   const [howItWorksOpen, setHowItWorksOpen] = useState(false)
+  const { resetSession } = useQuizSession()
+
+  const questionsQuery = useQuery({
+    queryKey: ['questions'],
+    queryFn: fetchQuestions,
+  })
+
+  const questionCount = questionsQuery.data?.length
+  const questionsLabel =
+    questionCount != null
+      ? String(questionCount)
+      : questionsQuery.isLoading
+        ? '…'
+        : '—'
+
+  function startQuiz() {
+    resetSession()
+    void navigate('/quiz')
+  }
 
   return (
     <div className="flex flex-1 flex-col">
@@ -44,14 +66,18 @@ export function QuizHomePage() {
                 Qual é a sua chance real de passar no ENEM?
               </h1>
               <p className="mx-auto max-w-md text-sm leading-relaxed text-muted-foreground text-pretty sm:text-base">
-                10 perguntas rápidas. Um resultado personalizado. Descubra onde
-                você está e o que focar agora.
+                Responda ao quiz e receba um resultado personalizado com a sua
+                faixa de preparação.
               </p>
             </div>
           </div>
 
           <div className="flex gap-2">
-            <StatChip icon={ClipboardList} label="Perguntas" value="10" />
+            <StatChip
+              icon={ClipboardList}
+              label="Perguntas"
+              value={questionsLabel}
+            />
             <StatChip icon={Clock3} label="Minutos" value="~3" />
             <StatChip icon={Target} label="Score" value="0–100" />
           </div>
@@ -81,7 +107,8 @@ export function QuizHomePage() {
             <CollapsibleContent>
               <div className="space-y-4 border-t border-primary/10 px-5 pt-3 pb-5">
                 <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
-                  Cada alternativa tem um peso diferente para diagnosticar onde você está.
+                  Cada alternativa tem um peso diferente para diagnosticar onde
+                  você está.
                 </p>
                 <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
                   Responda com honestidade. No final você deixa seus dados e vê
@@ -110,14 +137,13 @@ export function QuizHomePage() {
               </div>
             </CollapsibleContent>
           </Collapsible>
-
-          {/* <div className="pb-20" /> */}
         </motion.div>
       </div>
 
       <ActionDock
-        primaryLabel="Quiz"
-        onPrimary={() => void navigate('/quiz')}
+        primaryLabel="Começar quiz"
+        onPrimary={startQuiz}
+        primaryDisabled={questionCount === 0}
         secondary={
           <Button
             type="button"

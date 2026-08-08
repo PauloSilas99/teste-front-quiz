@@ -1,6 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { loginAdmin } from '@/shared/api'
+import { ApiError } from '@/shared/lib/api-client'
 import { useAuth } from './auth-context'
 import { loginSchema, type LoginFormValues } from './login-schema'
 import { Button } from '@/shared/components/ui/button'
@@ -19,12 +23,13 @@ import {
   QuizIconBadge,
   QuizTopBar,
 } from '@/shared/components/quiz'
-import { Shield } from 'lucide-react'
+import { Eye, EyeOff, Shield } from 'lucide-react'
 
 export function LoginPage() {
   const { isAuthenticated, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [showPassword, setShowPassword] = useState(false)
   const from =
     (location.state as { from?: string } | null)?.from ?? '/admin/leads'
 
@@ -36,17 +41,32 @@ export function LoginPage() {
     },
   })
 
+  const mutation = useMutation({
+    mutationFn: (values: LoginFormValues) =>
+      loginAdmin(values.email, values.password),
+    onSuccess: (data) => {
+      login({
+        email: data.user.email,
+        token: data.accessToken,
+      })
+      void navigate(from, { replace: true })
+    },
+  })
+
   if (isAuthenticated) {
     return <Navigate to="/admin/leads" replace />
   }
 
   function onSubmit(values: LoginFormValues) {
-    login({
-      email: values.email,
-      token: 'dev-token',
-    })
-    void navigate(from, { replace: true })
+    mutation.mutate(values)
   }
+
+  const errorMessage =
+    mutation.error instanceof ApiError
+      ? mutation.error.message
+      : mutation.error
+        ? 'Falha no login. Tente novamente.'
+        : null
 
   return (
     <QuizShell>
@@ -64,6 +84,11 @@ export function LoginPage() {
                 className="space-y-4"
                 noValidate
               >
+                {errorMessage && (
+                  <p className="rounded-2xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                    {errorMessage}
+                  </p>
+                )}
                 <FormField
                   control={form.control}
                   name="email"
@@ -90,13 +115,32 @@ export function LoginPage() {
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          autoComplete="current-password"
-                          placeholder="••••••••"
-                          className="h-12 rounded-2xl border-border/80 bg-secondary/50"
-                          {...field}
-                        />
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? 'text' : 'password'}
+                            autoComplete="current-password"
+                            placeholder="••••••••"
+                            className="h-12 rounded-2xl border-border/80 bg-secondary/50 pr-12"
+                            {...field}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1/2 right-1.5 size-9 -translate-y-1/2 rounded-full text-muted-foreground hover:text-foreground"
+                            onClick={() => setShowPassword((v) => !v)}
+                            aria-label={
+                              showPassword ? 'Ocultar senha' : 'Mostrar senha'
+                            }
+                            aria-pressed={showPassword}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="size-4" />
+                            ) : (
+                              <Eye className="size-4" />
+                            )}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -104,9 +148,10 @@ export function LoginPage() {
                 />
                 <Button
                   type="submit"
+                  disabled={mutation.isPending}
                   className="h-12 w-full rounded-full text-base font-semibold shadow-[0_0_20px_var(--glow)]"
                 >
-                  Entrar
+                  {mutation.isPending ? 'Entrando…' : 'Entrar'}
                 </Button>
               </form>
             </Form>
