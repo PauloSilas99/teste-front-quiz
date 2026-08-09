@@ -89,4 +89,48 @@ export type LeadDetail = LeadSummary & {
 export type ListLeadsParams = {
   search?: string
   band?: ScoreBand | ''
+  page?: number
+  limit?: number
+}
+
+export type LeadsPageMeta = {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
+export type LeadsPageResponse = {
+  data: LeadSummary[]
+  meta: LeadsPageMeta
+}
+
+export type LeadStatsScoreBand = {
+  band: ScoreBand
+  label: string
+  count: number
+  percentage: number
+}
+
+export type LeadStatsStudyStage = {
+  key: string
+  label: string
+  count: number
+}
+
+export type LeadStatsRegistrationPoint = {
+  date: string
+  label: string
+  count: number
+  cumulative: number
+}
+
+export type LeadStats = {
+  totalLeads: number
+  firstQuestionTitle: string | null
+  byScoreBand: LeadStatsScoreBand[]
+  byStudyStage: LeadStatsStudyStage[]
+  registrationsOverTime: LeadStatsRegistrationPoint[]
 }
