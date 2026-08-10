@@ -14,7 +14,23 @@ No back (Render), `CORS_ORIGIN` deve incluir `https://teste-front-quiz.vercel.ap
 
 **Build (Vercel):** `npm run build` (`tsc -b && vite build` → pasta `dist`).
 
-Admin em produção: https://teste-front-quiz.vercel.app/admin/login  
+### Acesso ao painel admin
+
+| Ambiente | URL de login |
+|----------|--------------|
+| **Produção** | https://teste-front-quiz.vercel.app/admin/login |
+| **Local** | http://localhost:5173/admin/login |
+
+Após o login, o painel redireciona para `/admin/leads` (dashboard, leads e export CSV).
+
+**Credenciais (seed do backend):**
+
+| Campo | Valor |
+|-------|-------|
+| E-mail | `comercial@hotmail.com` |
+| Senha | `admin123` |
+
+> As mesmas credenciais valem em local e em produção, desde que o seed do back tenha sido aplicado (`ADMIN_EMAIL` / `ADMIN_PASSWORD`).
 
 ---
 
@@ -112,9 +128,15 @@ Abra http://localhost:5173
 | Uso | URL |
 |-----|-----|
 | Quiz | http://localhost:5173/ |
-| Admin | http://localhost:5173/admin/login |
+| Admin (login) | http://localhost:5173/admin/login |
+| Admin (painel) | http://localhost:5173/admin/leads |
 
-Credenciais do admin = seed do back (`ADMIN_EMAIL` / `ADMIN_PASSWORD`; no exemplo: `comercial@hotmail.com` / `admin123`).
+**Login do admin (local):**
+
+- **E-mail:** `comercial@hotmail.com`  
+- **Senha:** `admin123`  
+
+(Usuário criado pelo seed do back; variáveis `ADMIN_EMAIL` / `ADMIN_PASSWORD`.)
 
 #### 5. Build e preview local
 
@@ -161,10 +183,13 @@ npm run preview  # serve o dist (útil para validar build)
 
 Atalhos produção:
 
-- https://teste-front-quiz.vercel.app/  
-- https://teste-front-quiz.vercel.app/admin/login  
+- Quiz: https://teste-front-quiz.vercel.app/  
+- Admin: https://teste-front-quiz.vercel.app/admin/login  
 
-Admin: token no `localStorage` + `PrivateRoute` no front; rotas `/leads*` protegidas com JWT no backend.
+**Acesso admin (prod e local):** e-mail `comercial@hotmail.com` · senha `admin123`  
+(detalhes em [Acesso ao painel admin](#acesso-ao-painel-admin).)
+
+Auth: token no `localStorage` + `PrivateRoute` no front; rotas `/leads*` protegidas com JWT no backend.
 
 ---
 
@@ -182,14 +207,28 @@ Objetivo de UX: **um fluxo linear, curto e legível**, com feedback de carregame
 
 ## Área administrativa
 
+### Como acessar
+
+1. Abra a página de login:  
+   - **Produção:** https://teste-front-quiz.vercel.app/admin/login  
+   - **Local:** http://localhost:5173/admin/login  
+2. Entre com as credenciais do seed:
+
+| Campo | Valor |
+|-------|-------|
+| E-mail | `comercial@hotmail.com` |
+| Senha | `admin123` |
+
+3. Após autenticar, você cai em `/admin/leads`.
+
+### O que tem no painel
+
 - Total de leads  
 - Gráficos: distribuição por faixa, etapa dos estudos e cadastros no tempo (`GET /leads/stats`)  
 - Lista com busca (nome/e-mail), filtro por faixa, **10 por página**  
 - Detalhe em sheet (todas as respostas)  
 - Export CSV do filtro completo (não só a página atual)  
 - Layout responsivo (cards no mobile, tabela no desktop)
-
-Credenciais: as mesmas do seed no back (`ADMIN_EMAIL` / `ADMIN_PASSWORD`).
 
 ---
 
